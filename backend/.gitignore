@@ -1,2 +1,4 @@
 .env
 node_modules
+rsa_key_prv.pem
+rsa_key_pub.pem

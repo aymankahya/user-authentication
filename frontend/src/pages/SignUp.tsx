@@ -10,11 +10,17 @@ import LoginIcon from "@mui/icons-material/Login";
 import { useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import { useRedirectSignedUser } from "../hooks/useRedirectSignedUser";
+import { useSignup } from "../hooks/useSignup";
 
 function SignUp() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  useRedirectSignedUser();
+  const { loading, signup } = useSignup();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    signup(e);
+  };
+
   return (
     <>
       <Box
@@ -50,7 +56,7 @@ function SignUp() {
             Sign up
           </Typography>
 
-          <form method="POST" action="http://localhost:3000/signup">
+          <form onSubmit={handleSubmit}>
             <TextField
               name="username"
               id="outlined-basic"
@@ -83,6 +89,7 @@ function SignUp() {
             />
 
             <Button
+              disabled={loading}
               variant="contained"
               type="submit"
               startIcon={<LoginIcon />}

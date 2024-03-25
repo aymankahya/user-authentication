@@ -1,8 +1,16 @@
 import { Button, Typography } from "@mui/material";
-import { useAuth } from "../hooks/useAuth";
+
+import { useLogout } from "../hooks/useLogout";
+import { useGetUser } from "../hooks/useGetUser";
 
 function Home() {
-  const user = useAuth();
+  const { logout } = useLogout();
+  const { user } = useGetUser();
+
+  const handleLogout = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    logout();
+  };
 
   return (
     <>
@@ -11,9 +19,9 @@ function Home() {
         fontSize={"2rem"}
         sx={{ margin: "1rem", fontWeight: "bold" }}
       >
-        Hello <em>{user?.user.username}</em>
+        Hello <em>{user?.username}</em>
       </Typography>
-      <form action="http://localhost:3000/logout" method="POST">
+      <form onSubmit={handleLogout}>
         <Button
           type="submit"
           size="small"

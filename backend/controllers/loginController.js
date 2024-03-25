@@ -1,24 +1,34 @@
-const passport = require("passport");
+const User = require("../models/User");
+const bcrypt = require("bcryptjs");
+const issueJWT = require("../utils/issueJWT");
 require("dotenv").config();
 
 const loginController = async (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      return next(err);
-    }
+  try {
+    const user = await User.findOne({ username: req.body.username });
+    if (!user)
+      return res
+        .status(401)
+        .json({ success: false, error: "Incorrect username" });
 
-    if (!user) {
-      const errorMessage = encodeURIComponent(info.message);
-      return res.redirect(`//${process.env.CLIENT}/login?e=${errorMessage}`);
-    }
+    const match = await bcrypt.compare(req.body.password, user.password);
 
-    req.logIn(user, (err) => {
-      if (err) {
-        return next(err);
-      }
-      return res.redirect(`//${process.env.CLIENT}/home`);
+    if (!match)
+      return res
+        .status(401)
+        .json({ success: false, error: "Incorrect password" });
+
+    const jwt = issueJWT(user, "1d");
+
+    return res.status(200).json({
+      success: true,
+      user: { id: user._id, username: user.username },
+      token: jwt.token,
+      expiresIn: jwt.expires,
     });
-  })(req, res, next);
+  } catch (err) {
+    next(err);
+  }
 };
 
 module.exports = loginController;

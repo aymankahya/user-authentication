@@ -11,12 +11,17 @@ import LoginIcon from "@mui/icons-material/Login";
 import { useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link, useSearchParams } from "react-router-dom";
-import { useRedirectSignedUser } from "../hooks/useRedirectSignedUser";
+import { useLogin } from "../hooks/useLogin";
 
 function Login() {
   const [params] = useSearchParams();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  useRedirectSignedUser();
+  const { loading, login } = useLogin();
+
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    login(e);
+  };
 
   return (
     <>
@@ -73,7 +78,7 @@ function Login() {
             Log in
           </Typography>
 
-          <form method="POST" action="http://localhost:3000/login">
+          <form onSubmit={handleLogin}>
             <TextField
               name="username"
               id="outlined-basic"
@@ -106,6 +111,7 @@ function Login() {
             />
 
             <Button
+              disabled={loading}
               variant="contained"
               type="submit"
               startIcon={<LoginIcon />}
