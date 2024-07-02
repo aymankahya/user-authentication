@@ -81,7 +81,7 @@ NODE_ENV = <"prod" : for production environment or "dev": for development enviro
 SECRET = <your secret key to secure the express js session>
 DB_USERNAME = <MongoDB username>
 DB_PASSWORD = <MongoDB password>
-PRODUCTION_DB_NAME = <production database name you created earlier>
+PRODUCTION_DB_NAME = <production database name created earlier>
 CLIENT = <client side url>
 PORT= <express app running port>
 ```
